@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+show_usage() {
+  cat <<-EOF
+
+  Usage: $0 [options] [COMMAND] [args]
+
+  Commands:
+
+    $0 bash include <file1 file2 .. fileN>
+    $0 dir <file1 file2 .. fileN>
+    $0 install <file1 file2 .. fileN>
+
+    $0 --profile <profile1 profile2 .. profileN>
+
+  Options:
+  
+    -V, --version
+    -h, --help
+
+EOF
+  exit 0
+}
+
+show_usage
