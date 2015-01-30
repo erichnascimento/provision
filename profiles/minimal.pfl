@@ -1,9 +1,0 @@
-bash include default-aliases
-bash include default-vars
-dir default-paths 
-install git
-install golang
-install goto
-install oracle-java
-install vagrant
-install virtualbox

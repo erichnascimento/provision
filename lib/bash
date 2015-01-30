@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+. $(dirname $0)/bootstrap.sh
+
+USER_CONFIG_BASH_=$USER_CONFIG_/bash
+USER_CONFIG_BASH_INCLUDE_FILE_=$USER_CONFIG_BASH_/.includes.sh
+USER_CONFIG_BASH_INCLUDES_=$USER_CONFIG_BASH_/includes
+
+bash-create-dependencies () {
+	create-user-config-dir
+	if [ ! -d $USER_CONFIG_BASH_ ]; then
+		log-info "Creating bash dir on \"$USER_CONFIG_BASH_\""
+		mkdir $USER_CONFIG_BASH_
+	fi
+
+	if [ ! -f $USER_CONFIG_BASH_INCLUDE_FILE_ ]; then
+		log-info "Creating bash include file on \"$USER_CONFIG_BASH_INCLUDE_FILE_\""
+		touch $USER_CONFIG_BASH_INCLUDE_FILE_
+	fi
+
+	if [ ! -d $USER_CONFIG_BASH_INCLUDES_ ]; then
+		log-info "Creating bash includes dir on \"$USER_CONFIG_BASH_INCLUDES_\""
+	fi
+}
+
+bash-include () {
+	echo "Include $1"
+}
+
+
+if [ "$#" == "0" ]; then
+	panic
+fi
+
+bash-create-dependencies
+
+while (( "$#" )); do
+	case $1 in
+		include) shift; bash-include $1; exit;
+	esac
+done
+
+
+
+
+
+
+echo $#
+echo $ROOT_
+echo $LIB_
+echo $PROFILES_
+echo $SCRIPTS_
+echo $USER_CONFIG_BASH_INCLUDE_FILE_

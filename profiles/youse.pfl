@@ -1,0 +1,5 @@
+extends me
+
+install apps/pgadmin
+install tools/apache-flex:9.4
+install personal/selecty

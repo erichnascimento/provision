@@ -1,6 +1,6 @@
-# provision
+# provision (in development)
 
-A shell script based provision tool
+A `idempotent` shell script based provision tool
 
 ## Usage
 
@@ -8,14 +8,6 @@ A shell script based provision tool
 ```
 $ ./provision --help
 ``
-
-### Provision bash
-
-Used to provide a bash configuration
-
-```
-$ ./provision bash include default-aliases
-```
 
 ### Using provision profile
 ```
