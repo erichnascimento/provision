@@ -5,9 +5,19 @@
 USER_CONFIG_BASH_=$USER_CONFIG_/bash
 USER_CONFIG_BASH_INCLUDE_FILE_=$USER_CONFIG_BASH_/.includes.sh
 USER_CONFIG_BASH_INCLUDES_=$USER_CONFIG_BASH_/includes
+USER_BASH_FILE_=~/.bashrc
+#USER_BASH_FILE_=/tmp/profile
+
+BASH_INCLUDES_=$SCRIPTS_/bash/includes
+
+bash-append-include-autoloader () {
+	local tag="#PROVISION-BASH-INCLUDE-AUTOLOAD"
+	grep -q "$tag" $USER_BASH_FILE_ || echo ". $1 #PROVISION-BASH-INCLUDE-AUTOLOAD" >> $USER_BASH_FILE_
+}
 
 bash-create-dependencies () {
 	create-user-config-dir
+
 	if [ ! -d $USER_CONFIG_BASH_ ]; then
 		log-info "Creating bash dir on \"$USER_CONFIG_BASH_\""
 		mkdir $USER_CONFIG_BASH_
@@ -15,18 +25,50 @@ bash-create-dependencies () {
 
 	if [ ! -f $USER_CONFIG_BASH_INCLUDE_FILE_ ]; then
 		log-info "Creating bash include file on \"$USER_CONFIG_BASH_INCLUDE_FILE_\""
-		touch $USER_CONFIG_BASH_INCLUDE_FILE_
+		echo ". $USER_CONFIG_BASH_INCLUDES_/*.sh" > $USER_CONFIG_BASH_INCLUDE_FILE_
+		bash-append-include-autoloader $USER_CONFIG_BASH_INCLUDE_FILE_
 	fi
 
 	if [ ! -d $USER_CONFIG_BASH_INCLUDES_ ]; then
 		log-info "Creating bash includes dir on \"$USER_CONFIG_BASH_INCLUDES_\""
+		mkdir $USER_CONFIG_BASH_INCLUDES_
 	fi
 }
 
+#
+# Include $1 file.
+# Example: $ ./bash include ls-alias
+# File ls-alias on scripts/bash/includes will be included in user bash profile
+#
 bash-include () {
-	echo "Include $1"
+	local sourceFile=$BASH_INCLUDES_/$1.sh
+	local targetFile=$USER_CONFIG_BASH_INCLUDES_/$1.sh
+
+	# Check if source file exists, otherwise, abort
+	if [ ! -f $sourceFile ]; then
+		panic
+	fi
+
+	# Check if target file exists, otherwise, return
+	if [ -f $targetFile ]; then
+		log-info "File \"$1\" already included"
+		return
+	fi
+
+	# Include file
+	log-info "Including \"$1\" ..."
+	cp "$sourceFile" "$targetFile"
+
+	if [ ! -f $targetFile ]; then
+		panic
+	fi
 }
 
+bash-clean () {
+	# TODO
+	# Remove bash include autoload from user bash file
+	return
+}
 
 if [ "$#" == "0" ]; then
 	panic
@@ -39,15 +81,3 @@ while (( "$#" )); do
 		include) shift; bash-include $1; exit;
 	esac
 done
-
-
-
-
-
-
-echo $#
-echo $ROOT_
-echo $LIB_
-echo $PROFILES_
-echo $SCRIPTS_
-echo $USER_CONFIG_BASH_INCLUDE_FILE_
