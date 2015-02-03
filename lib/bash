@@ -25,7 +25,11 @@ bash-create-dependencies () {
 
 	if [ ! -f $USER_CONFIG_BASH_INCLUDE_FILE_ ]; then
 		log-info "Creating bash include file on \"$USER_CONFIG_BASH_INCLUDE_FILE_\""
-		echo ". $USER_CONFIG_BASH_INCLUDES_/*.sh" > $USER_CONFIG_BASH_INCLUDE_FILE_
+		cat > $USER_CONFIG_BASH_INCLUDE_FILE_ <<EOF
+for file in $USER_CONFIG_BASH_INCLUDES_/*; do
+  . \$file
+done
+EOF
 		bash-append-include-autoloader $USER_CONFIG_BASH_INCLUDE_FILE_
 	fi
 
