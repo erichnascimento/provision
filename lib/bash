@@ -10,9 +10,15 @@ USER_BASH_FILE_=~/.bashrc
 
 BASH_INCLUDES_=$SCRIPTS_/bash/includes
 
+# Tag for identification of include autoloader
+include_autoloader_tag="#PROVISION-BASH-INCLUDE-AUTOLOAD"
+
 bash-append-include-autoloader () {
-	local tag="#PROVISION-BASH-INCLUDE-AUTOLOAD"
-	grep -q "$tag" $USER_BASH_FILE_ || echo ". $1 #PROVISION-BASH-INCLUDE-AUTOLOAD" >> $USER_BASH_FILE_
+	grep -q "$include_autoloader_tag" $USER_BASH_FILE_ || echo ". $1 $include_autoloader_tag" >> $USER_BASH_FILE_
+}
+
+bash-remove-include-autoloader () {
+	sed -i '/$include_autoloader_tag/d' $USER_BASH_FILE_
 }
 
 bash-create-dependencies () {
@@ -69,9 +75,7 @@ bash-include () {
 }
 
 bash-clean () {
-	# TODO
-	# Remove bash include autoload from user bash file
-	return
+	bash-remove-include-autoloader
 }
 
 if [ "$#" == "0" ]; then
@@ -83,5 +87,6 @@ bash-create-dependencies
 while (( "$#" )); do
 	case $1 in
 		include) shift; bash-include $1; exit;
+		clean) bash-clean; exit;
 	esac
 done
