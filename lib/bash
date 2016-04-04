@@ -86,7 +86,7 @@ bash-create-dependencies
 
 while (( "$#" )); do
 	case $1 in
-		include) shift; bash-include $1; exit;
-		clean) bash-clean; exit;
+		include) shift; bash-include $1; exit ;;
+		clean) bash-clean; exit ;;
 	esac
 done
